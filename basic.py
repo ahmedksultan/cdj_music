@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 
 from spotipy.oauth2 import SpotifyClientCredentials
 
-client_id = '47ba54eeec38449ebca556beee1b6a01'
-client_secret = '5413feecd775481ca6e10ac3e14eae34'
+client_id = ''
+client_secret = ''
 
 sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(client_id, client_secret))
 
@@ -63,6 +63,9 @@ with open("user_playlists.json", "w") as f:
     json.dump(playlist_dict, f)
 '''
 
+
+'''
+
 with open("user_playlists.json", "r") as f:
     playlist_dict = json.load(f)
 
@@ -88,6 +91,8 @@ for ud, up in zip(data, playlist_dict.keys()):
 
         print("----- PLAYLIST!!!!!!!: " + pl)
 
+        # TASK: build an iterator for playlist >100 songs
+
         for song in songs["items"]:
             try:
                 target_uri = song["track"]["uri"]
@@ -101,3 +106,10 @@ for ud, up in zip(data, playlist_dict.keys()):
 
 with open("user_songs.json", "w") as f:
     json.dump(aggrsong_dict, f)
+
+'''
+
+# Final steps:
+    # >>> build iterator for playlists w/ >100 songs
+    # >>> best way to get audio_features() while minimizing n requests
+    # 
