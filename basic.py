@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 
 from spotipy.oauth2 import SpotifyClientCredentials
 
-client_id = ''
-client_secret = ''
+client_id = '47ba54eeec38449ebca556beee1b6a01'
+client_secret = '5413feecd775481ca6e10ac3e14eae34'
 
 sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(client_id, client_secret))
 
@@ -70,18 +70,34 @@ with open("user_playlists.json", "r") as f:
 
 aggrsong_dict = {}
 
+for ud in data:
+    user_id = ud[5]
+    aggrsong_dict[user_id] = {}
+
 for ud, up in zip(data, playlist_dict.keys()):
     user_id = ud[5]
-
-    aggrsong_dict[user_id] = {}
+    
     aggrsong_dict[user_id]["playlists"] = playlist_dict[up]
 
     aggrsong_dict[user_id]["songs"] = []
 
+    print("----- USER!!!!!!!: " + user_id)
+
     for pl in playlist_dict[up]:
-        songs = sp.playlist_tracks(pl)["items"]
-        aggrsong_dict[user_id]["songs"].append(songs)
+        songs = sp.playlist_tracks(pl) 
 
-with open("user_songs,json", "w") as f:
+        print("----- PLAYLIST!!!!!!!: " + pl)
+
+        for song in songs["items"]:
+            try:
+                target_uri = song["track"]["uri"]
+                if "local" not in target_uri:
+                    song_info_builder = {}
+                    song_info_builder["uri"] = target_uri
+                    # print(sp.audio_features(target_uri))
+                    aggrsong_dict[user_id]["songs"].append(song_info_builder)
+            except TypeError:
+                pass
+
+with open("user_songs.json", "w") as f:
     json.dump(aggrsong_dict, f)
-
