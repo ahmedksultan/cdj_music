@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 
 from spotipy.oauth2 import SpotifyClientCredentials
 
-client_id = ''
-client_secret = ''
+client_id = '47ba54eeec38449ebca556beee1b6a01'
+client_secret = '5413feecd775481ca6e10ac3e14eae34'
 
 sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(client_id, client_secret))
 
@@ -32,7 +32,6 @@ with open('data_short.csv', newline='') as f:
 
             # url formatting
             sp_prof = row[9]
-            sp_play = row[10]
 
             if (sp_prof.find("?si=") != -1):
                 sp_prof = sp_prof[:sp_prof.find("?si=")]
@@ -40,10 +39,8 @@ with open('data_short.csv', newline='') as f:
             if (sp_prof.find("user/") != -1):
                 sp_prof = sp_prof[sp_prof.find("user/") + 5:]
             
-            if (sp_play.find("?si=") != -1):
-                sp_play = sp_play[:sp_play.find("?si=")]
             
-            data.append((school, major, year, gender, intl_dom, sp_prof, sp_play))
+            data.append((school, major, year, gender, intl_dom, sp_prof))
 
 playlist_dict = {}
 
@@ -62,7 +59,6 @@ for user in data:
 with open("user_playlists.json", "w") as f:
     json.dump(playlist_dict, f)
 '''
-
 
 '''
 
@@ -109,7 +105,42 @@ with open("user_songs.json", "w") as f:
 
 '''
 
+dataset_raw = {}
+
+with open("user_songs.json", "r") as f:
+    dataset_raw = json.load(f)
+
+for ud, up in zip(data, dataset_raw.keys()):
+    dataset_raw[up]["college"] = ud[0]
+    dataset_raw[up]["major"] = ud[1].split(", ")
+    dataset_raw[up]["year"] = ud[2]
+    dataset_raw[up]["gender"] = ud[3]
+    dataset_raw[up]["status"] = ud[4]
+
+    # print(len(dataset_raw[up]["songs"]))
+
+    ''' algorithm:
+    iterate through songs, adding them to a list (while n < len(dataset_raw[up]["songs]), uri added to running list)
+    every 100 songs (save start index)
+        > call audio_features(uri running list)
+        > go back and fill in JSON with values
+    last batch X songs
+    '''
+
+    n = 0
+    loop = 0
+
+    while (n < len(dataset_raw[up]["songs"])):
+        while(loop < (int(len(dataset_raw[up]["songs"]) / 100))):
+            
+
+
+
+with open("dataset.json", "w") as f:
+    json.dump(dataset_raw, f)
+
+
 # Final steps:
     # >>> build iterator for playlists w/ >100 songs
     # >>> best way to get audio_features() while minimizing n requests
-    # 
+
