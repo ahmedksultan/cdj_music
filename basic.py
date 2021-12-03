@@ -132,7 +132,43 @@ for ud, up in zip(data, dataset_raw.keys()):
 
     while (n < len(dataset_raw[up]["songs"])):
         while(loop < (int(len(dataset_raw[up]["songs"]) / 100))):
+            uri_list = []
+            # loop through, 100 songs at a time (0..99, 100..199)
+            for i in range(loop*100, (loop*100)+100):
+                uri_list.append(dataset_raw[up]["songs"][i]["uri"])
             
+            # call audio features
+            output = sp.audio_features(uri_list)
+            
+            for i in range(0, 100):
+                dataset_raw[up]["songs"][n]["features"] = output[i]
+                n = n+1
+
+            loop = loop + 1
+        uri_list = []
+        for i in range(n, len(dataset_raw[up]["songs"])):
+            uri_list.append(dataset_raw[up]["songs"][i]["uri"])
+
+        print(len(uri_list))
+        
+        output = sp.audio_features(uri_list)
+
+        for i in range(0, len(uri_list)):
+            dataset_raw[up]["songs"][n]["features"] = output[i]
+            n = n+1
+    print("all done")
+    
+with open("dataset_new.json", "w") as f:
+    json.dump(dataset_raw, f)
+
+
+    
+
+            
+
+
+            
+                
 
 
 
